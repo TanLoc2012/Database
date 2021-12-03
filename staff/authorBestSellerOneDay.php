@@ -1,18 +1,16 @@
 <?php
-    require_once "DB.php";
-    require_once "header.php";
-    //(i.10). Xem danh sách tác giả có số sách được mua nhiều nhất trong một tháng
+    require_once "../headerStaff.php";
+    //(i.9). Xem danh sách tác giả có số sách được mua nhiều nhất trong một ngày
     $date_bought = '2021-11-06';
     $sql = "SELECT author.name,author.phone,SUM(bought.num)
-            FROM author, bought,written
-            WHERE YEAR(bought.purchase_date)='2021' AND MONTH(bought.purchase_date)='11' AND bought.isbn=written.isbn AND written.author_phone=author.phone
+            FROM author,bought,written,invoice
+            WHERE invoice.date_pay='2021-12-01' AND bought.invoice_id=invoice.id AND bought.isbn=written.isbn AND written.phone_author=author.phone
             GROUP BY author.name
-            ORDER BY SUM(bought.num) DESC
-            LIMIT 1;";
+            ORDER BY SUM(bought.num) DESC";
     $data = executeResult($sql);
 ?>
-<h1>Xem danh sách tác giả có số sách được mua nhiều nhất trong một tháng</h1>
-<table class="table">
+<h3 style="margin:70px 200px 0">Xem danh sách tác giả có số sách được mua nhiều nhất trong một ngày 2021-12-01</h3>
+<table class="table table-striped">
   <thead>
     <tr>
       <th scope="col">STT</th>
@@ -35,3 +33,7 @@
       
   </tbody>
 </table>
+
+<?php
+  require_once "../footer.php";
+?>

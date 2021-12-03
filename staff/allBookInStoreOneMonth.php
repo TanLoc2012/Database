@@ -1,16 +1,16 @@
 <?php
-    require_once "DB.php";
-    require_once "header.php";
+    require_once "../headerStaff.php";
     //(i.15). Xem tổng số sách tính theo mỗi ISBN tại mỗi kho hàng trong một tháng
     $date_bought = '2021-11-06';
-    $sql = "SELECT storageaddress.isbn,book.name,storageaddress.quantity,storageaddress.address,storageaddress.ngaynhap
-            FROM storageaddress,book
-            WHERE YEAR(storageaddress.ngaynhap)='2021' AND MONTH(storageaddress.ngaynhap)='11' AND book.isbn=storageaddress.isbn
-            ORDER BY storageaddress.address ASC";
+    $sql = "SELECT storageaddress.isbn,book.name,storageaddress.quantity,addressstore.address,storageaddress.ngaynhap
+            FROM storageaddress,book,addressstore
+            WHERE MONTH(storageaddress.ngaynhap)='12' AND book.isbn=storageaddress.isbn AND addressstore.id=storageaddress.address_id
+            ORDER BY addressstore.address ASC";
     $data = executeResult($sql);
 ?>
-<h1>Xem tổng số sách tính theo mỗi ISBN tại mỗi kho hàng trong một tháng</h1>
-<table class="table">
+<h3 style="margin:70px 200px 0">Xem tổng số sách tính theo mỗi ISBN tại mỗi kho hàng trong một tháng 12</h3>
+<h1></h1>
+<table class="table table-striped">
   <thead>
     <tr>
       <th scope="col">STT</th>
@@ -37,3 +37,6 @@
       
   </tbody>
 </table>
+<?php
+  require_once "../footer.php";
+?>

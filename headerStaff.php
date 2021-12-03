@@ -1,5 +1,4 @@
 <?php
-    session_start();
     require_once "utility.php";
     require_once "DB.php";
 
@@ -11,62 +10,6 @@
     }
     $user = getUserToken();
 
-    if($user){
-        if(isset($_GET["card"])) {
-            $isbn = $_GET["card"];
-            $action = 'add';
-            $num = 1;
-    
-            $cart = [];
-            if(isset($_COOKIE['cart'])) {
-                $json = $_COOKIE['cart'];
-                $cart = json_decode($json, true);
-            }
-        
-            switch ($action) {
-                case 'add':
-                    $isFind = false;
-                    for ($i=0; $i < count($cart); $i++) { 
-                        if($cart[$i]['isbn'] == $isbn) {
-                            $cart[$i]['num'] += $num;
-                            $isFind = true;
-                            break;
-                        }
-                    }
-        
-                    if(!$isFind) {
-                        $cart[] = [
-                            'isbn'=>$isbn,
-                            'num'=>$num
-                        ];
-                    }
-                    setcookie('cart', json_encode($cart), time() + 30*24*60*60, '/');
-                    break;
-            }
-        }
-
-        if(isset($_GET["deleted"])){
-            $json = $_COOKIE['cart'];
-            $cart = json_decode($json, true);
-            $id = $_GET["deleted"];
-            for ($i=0; $i < count($cart); $i++) { 
-              if($cart[$i]["isbn"] == $id) {
-                  array_splice($cart, $i, 1);
-                  break;
-                }
-            } 
-          setcookie('cart', json_encode($cart), time() + 30*24*60*60, '/');
-        }
-    }
-    $cart = [];
-    if(isset($_COOKIE['cart'])) {
-        $json = $_COOKIE['cart'];
-        $cart = json_decode($json, true);
-    }
-    $count = 0;
-    foreach ($cart as $item) {
-        $count += $item['num'];
-    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -103,38 +46,47 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="index.php?filed=1&author=1&keyword=1&year=1">Trang chủ <span
+                    <a class="nav-link" href="staff/index.php">Trang chủ <span
                             class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link"
-                        href="user/viewAuthorField.php?filed=1&keyword1=1&keyword2=1">Lọc theo tác giả</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link"
-                        href="user/ebook.php?filed=1&author=1&keyword=1&year=1">Sách cho thuê</a>
-                </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="user/printedBook.php?filed=1&author=1&keyword=1&year=1" id="navbarDropdown" role="button"
+                    <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Sách chỉ bán
+                        Xem danh sách
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="user/printedBook.php?filed=1&author=1&keyword=1&year=1">Sách truyền thống</a>
-                        <a class="dropdown-item" href="user/eBook.php?filed=1&author=1&keyword=1&year=1">Ebook</a>
+                        <a class="dropdown-item" href="staff/authorBestSellerOneDay.php">Xem danh sách tác giả có số sách được mua nhiều nhất trong một ngày</a>
+                        <a class="dropdown-item" href="staff/authorBestSellerOneMonth.php">Xem danh sách tác giả có số sách được mua nhiều nhất trong một tháng</a>
+                        <a class="dropdown-item" href="staff/mostBookSellOneMonth.php">Xem danh sách sách được mua nhiều nhất trong một tháng</a>
+                        <a class="dropdown-item" href="staff/paymentByCard.php">Xem danh sách mua hàng được thanh toán bằng thẻ trong một ngày</a>
+                        <a class="dropdown-item" href="staff/paymentError.php">Xem danh sách mua hàng được thanh toán bằng thẻ gặp sự cố trong một ngày</a>
+                        <a class="dropdown-item" href="staff/storeunder10.php">Xem danh sách kho hàng có số sách tính theo mỗi ISBN dưới 10 quyển trong một ngày</a>
+                        <a class="dropdown-item" href="staff/dskhohangMost1Month.php">Xem danh sách kho hàng được xuất kho nhiều nhất trong một tháng</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Xem tổng số sách
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="staff/AllBoughtOneDay.php">Xem tất cả các sách tính theo ISBN được mua trong một ngày</a>
+                        <a class="dropdown-item" href="staff/QuantityBoughtOneDay.php">Xem tổng số sách tính theo mỗi ISBN được mua trong một ngày</a>
+                        <a class="dropdown-item" href="staff/printedbookBoughtOneDay.php">Xem tổng số sách truyền thống tính theo mỗi ISBN được mua trong một ngày</a>
+                        <a class="dropdown-item" href="staff/ebookBoughtOneDay.php">Xem tổng số sách điện tử được mua trong một ngày</a>
+                        <a class="dropdown-item" href="staff/ebookLendAllOneDay.php">Xem tổng số sách điện tử được thuê trong một ngày</a>
+                        <a class="dropdown-item" href="staff/allBookInStoreOneMonth.php">Xem tổng số sách tính theo mỗi ISBN tại mỗi kho hàng trong một tháng</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="http://localhost/Laptrinhweb/Home/productList" id="navbarDropdown" role="button"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Xem danh sách
+                        Cập nhật
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="user/bookBoughtInMonth.php">Danh sách sách mà mình đã mua trong một tháng</a>
-                        <a class="dropdown-item" href="user/dsgiaodich.php">Danh sách các giao dịch mà mình đã thực hiện trong một tháng. </a>
-                        <a class="dropdown-item" href="user/dsgiaodichgapsuco.php">Danh sách các giao dịch gặp sự cố mà mình đã thực hiện trong một tháng. </a>
-                        <a class="dropdown-item" href="user/dsgiaodichchuahoanthanh.php">Danh sách các giao dịch mà mình đã thực hiện nhưng chưa hoàn tất. </a>
-                        <a class="dropdown-item" href="user/allBookFieldInMonth.php">Tổng số sách theo từng thể loại mà mình đã mua trong một tháng. </a>
+                        <a class="dropdown-item" href="staff/updateStateBook.php">Cập nhật thông tin về sách khi sách được nhập kho</a>
+                        <a class="dropdown-item" href="staff/updateStateInvoice.php">Cập nhật thông tin về sách khi sách được xuất kho </a>
+                        <a class="dropdown-item" href="staff/updateErrorBook.php">Cập nhật thông tin giao dịch khi giao dịch trực tuyến gặp sự cố</a>
                     </div>
                 </li>
             </ul>
@@ -174,7 +126,7 @@
         <div class="shopping_cart">
             <a style="font-size: 30px;color:black" href="user/card.php"><i
                     class="shopping_cart fas fa-shopping-cart"></i></a>
-            <span class="mount_product"><?=$count?>
+            <span class="mount_product"><?=0?>
             </span>
         </div>
     </nav>

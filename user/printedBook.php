@@ -1,6 +1,5 @@
 <?php
-    require_once "header.php";
-    $user = getUserToken();
+    require_once "../header.php";
 
     // handel fillter product
 
@@ -16,7 +15,7 @@
 
         $sql = "SELECT *
                 FROM field JOIN book ON field.isbn=book.isbn
-                WHERE field.title LIKE '$fillterField' AND deleted=1";
+                WHERE field.title LIKE '$fillterField'";
 
         $allBook = executeResult($sql);
     }
@@ -34,7 +33,7 @@
                 FROM book
                 WHERE book.isbn IN (SELECT written.isbn
                 FROM author JOIN written ON author.phone=written.phone_author
-                WHERE author.name='$fillterAuthor') AND deleted=1";
+                WHERE author.name='$fillterAuthor')";
 
         $allBook = executeResult($sql);
     }
@@ -50,7 +49,7 @@
 
         $sql = "SELECT * 
                 FROM keyword,book 
-                WHERE keyword.isbn=book.isbn AND keyword.title LIKE '$fillterKeyword' AND deleted=1";
+                WHERE keyword.isbn=book.isbn AND keyword.title LIKE '$fillterKeyword'";
 
         $allBook = executeResult($sql);
     }
@@ -66,15 +65,15 @@
 
         $sql = "SELECT * 
                 FROM book 
-                WHERE year='$fillterYear' AND deleted=1";
+                WHERE year='$fillterYear'";
 
         $allBook = executeResult($sql);
     }
 
     if($_GET["year"]==1 && $_GET["filed"]==1 && $_GET["author"]==1 && $_GET["keyword"]==1){
         $sql = "SELECT * 
-                FROM `book` 
-                WHERE deleted=1 ";
+                FROM book 
+                WHERE book.typebook IN(0,2)";
         $allBook = executeResult($sql);
     }
 ?>
@@ -83,14 +82,14 @@
 <nav id="nav-breadcrumb" aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="ml125 breadcrumb-item"><a href="http://localhost/Laptrinhweb/Home">Trang chủ</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Sản phẩm</li>
+        <li class="breadcrumb-item active" aria-current="page">Sách truyền thống</li>
     </ol>
 </nav>
 <!-- End Breadcrumb -->
 <div id="wrapper">
 
     <!-- Bộ lọc -->
-            <form id="flex1" method="GET" action="index.php">
+            <form id="flex1" method="GET" action="user/printedBook.php">
                 <div class="col-sm">
                     <p style="font-weight:600">Lọc theo thể loại:</p>
 
@@ -180,5 +179,5 @@
 </div>
 
 <?php
-  require_once "footer.php";
+  require_once "../footer.php";
 ?>
